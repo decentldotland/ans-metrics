@@ -8,16 +8,22 @@
 
 ## About
 REST API for [ANS](https://ans.gg) domains metrics.
-## Gateways
 
-1- [arweave.gg](http://arweave.gg)
+## Endpoints
 
-2- [arweave.bio](http://arweave.bio)
+### 1- Statistics
 
+- `GET /stats`
 
-## Example
+### 2- Top Holders Leaderboard
 
-`ans_domain.gateway_endpoint.TLD` : [da2.arweave.gg](http://da2.arweave.gg)
+- `GET /leaderboard`
+
+### 3- Recent Feeds
+
+Type: `listing` or `mints`
+
+- `GET /recents/:type`
 
 ## License
 This projects is licensed under the [MIT License](./LICENSE)
