@@ -21,7 +21,9 @@ export async function getLeaderboard() {
       }
     }
 
-    return balanceSortedBalances;
+    return Object.fromEntries(
+      Object.entries(balanceSortedBalances).sort((a, b) => b[1] - a[1])
+    );
   } catch (error) {
     console.log(error);
     return {};
