@@ -10,8 +10,19 @@ export async function getStats() {
         (order) => order.status === "open" && order.expiry > new Date()
       ).length;
 
-    return { holders_count, domains_count };
+    const tx_count = state.signatures.length + state.minting_fees_id.length;
+    const marketplace_volume = state.marketplace
+      .filter((order) => order.status === "executed")
+      .map((order) => order.ask_price)
+      .reduce((a, b) => a + b);
+
+    return { holders_count, domains_count, tx_count, marketplace_volume };
   } catch (error) {
-    return { holders_count: "error", domains_count: "error" };
+    return {
+      holders_count: "error",
+      domains_count: "error",
+      tx_count: "error",
+      marketplace_volume: "error",
+    };
   }
 }
