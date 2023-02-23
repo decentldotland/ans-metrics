@@ -5,6 +5,13 @@ export async function getRecents(type) {
   try {
     const state = await readAnsContract();
     const priceTable = await pricing(state);
+
+    for (const user of state.balances) {
+      for (const domain of user.ownedDomains) {
+        domain.owner = user.address
+      }
+    };
+
     const recentDomains = state.balances
       .map((usr) => usr.ownedDomains)
       .flat()
@@ -18,6 +25,7 @@ export async function getRecents(type) {
       .sort((a, b) => b.created_at - a.created_at)
       .map((element) => ({
         domain: element.domain,
+        owner: element.owner,
         color: element.color,
         created_at: element.created_at,
         mint_cost: priceTable[`l${element.domain.length}`],
@@ -27,6 +35,7 @@ export async function getRecents(type) {
       return marketplaceDomains
         .map((element) => ({
           domain: element.domain,
+          owner: element.owner,
           color: element.color,
           created_at: element.created_at,
           mint_cost: priceTable[`l${element.domain.length}`],
