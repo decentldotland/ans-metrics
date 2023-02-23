@@ -18,8 +18,7 @@ export async function getRecents(type) {
       .sort((a, b) => Number(b.created_at) - Number(a.created_at));
     const marketplaceDomains = state.marketplace
       .filter((order) => order.status === "open" && order.expiry > new Date())
-      .map((order) => order.object)
-      .sort((a, b) => b.created_at - a.created_at);
+      .sort((a, b) => b.object.created_at - a.object.created_at);
     const result = recentDomains
       .concat(marketplaceDomains)
       .sort((a, b) => b.created_at - a.created_at)
@@ -34,10 +33,16 @@ export async function getRecents(type) {
     if (type === "listing") {
       return marketplaceDomains
         .map((element) => ({
+          id: element.id,
+          type: element.type,
+          for: element.for,
           domain: element.domain,
           owner: element.owner,
-          color: element.color,
-          created_at: element.created_at,
+          color: element.object.color,
+          minted_at: element.object.created_at,
+          listed_at: element.timestamp,
+          expiry: element.expiry,
+          ask_price: element.ask_price,
           mint_cost: priceTable[`l${element.domain.length}`],
         }));
     }
