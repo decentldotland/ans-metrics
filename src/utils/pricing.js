@@ -1,41 +1,29 @@
-import { readAnsContract } from "./exm.js";
-import { pricing } from "./pricing.js";
+import axios from "axios";
 
-export async function getRecents(type) {
+export async function pricing(state) {
   try {
-    const state = await readAnsContract();
-    const priceTable = await pricing(state);
-    const recentDomains = state.balances
-      .map((usr) => usr.ownedDomains)
-      .flat()
-      .sort((a, b) => Number(b.created_at) - Number(a.created_at));
-    const marketplaceDomains = state.marketplace
-      .filter((order) => order.status === "open" && order.expiry > new Date())
-      .map((order) => order.object)
-      .sort((a, b) => b.created_at - a.created_at);
-    const result = recentDomains
-      .concat(marketplaceDomains)
-      .sort((a, b) => b.created_at - a.created_at)
-      .map((element) => ({
-        domain: element.domain,
-        color: element.color,
-        created_at: element.created_at,
-        mint_cost: priceTable[`l${element.domain.length}`],
-      }));
-
-    if (type === "listing") {
-      return marketplaceDomains
-        .map((element) => ({
-          domain: element.domain,
-          color: element.color,
-          created_at: element.created_at,
-          mint_cost: priceTable[`l${element.domain.length}`],
-        }));
+    const arPrice = await fetchArPrice();
+    const priceTable = state.pricing;
+    for (const key in priceTable) {
+      const newValue = [priceTable[key], priceTable[key] / arPrice];
+      priceTable[key] = newValue;
     }
 
-    return result;
+    return priceTable;
   } catch (error) {
-    console.log(error);
-    return [];
+    return priceTable;
+  }
+}
+
+async function fetchArPrice() {
+  try {
+    const req = (
+      await axios.get(
+        `https://api.redstone.finance/prices/?symbol=AR&provider=redstone&limit=1`
+      )
+    )?.data;
+    return req[0]?.value;
+  } catch (error) {
+    return 0;
   }
 }
