@@ -1,8 +1,10 @@
 import { readAnsContract } from "./exm.js";
+import { pricing } from "./pricing.js";
 
 export async function getRecents(type) {
   try {
     const state = await readAnsContract();
+    const priceTable = await pricing(state);
     const recentDomains = state.balances
       .map((usr) => usr.ownedDomains)
       .flat()
@@ -18,6 +20,7 @@ export async function getRecents(type) {
         domain: element.domain,
         color: element.color,
         created_at: element.created_at,
+        mint_cost: priceTable[`l${element.domain.length}`],
       }));
 
     if (type === "listing") {
@@ -26,6 +29,7 @@ export async function getRecents(type) {
           domain: element.domain,
           color: element.color,
           created_at: element.created_at,
+          mint_cost: priceTable[`l${element.domain.length}`],
         }));
     }
 
