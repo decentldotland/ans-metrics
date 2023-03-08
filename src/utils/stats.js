@@ -1,5 +1,7 @@
 import { readAnsContract } from "./exm.js";
 
+const WL_TXS_COUNT = 1020;
+
 export async function getStats() {
   try {
     const state = await readAnsContract();
@@ -10,7 +12,7 @@ export async function getStats() {
         (order) => order.status === "open" && order.expiry > new Date()
       ).length;
 
-    const tx_count = state.signatures.length + state.minting_fees_id.length;
+    const tx_count = state.signatures.length + state.minting_fees_id.length + WL_TXS_COUNT;
     const marketplace_volume = state.marketplace
       .filter((order) => order.status === "executed")
       .map((order) => order.ask_price)
