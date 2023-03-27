@@ -44,7 +44,7 @@ export async function getRecents(type) {
           expiry: element.expiry,
           ask_price: element.ask_price,
           mint_cost: priceTable[`l${element.domain.length}`],
-        }));
+        })).sort((a, b) => b.listed_at - a.listed_at);
     }
 
     return result;
