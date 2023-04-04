@@ -5,6 +5,7 @@ import axios from "axios";
 import { getStats } from "./utils/stats.js";
 import { getLeaderboard } from "./utils/leaderboard.js";
 import { getRecents } from "./utils/recents.js";
+import { mapState } from "./utils/mapped.js";
 
 const app = express();
 
@@ -33,6 +34,18 @@ app.get("/leaderboard", async (req, res) => {
     res.setHeader("Content-Type", "application/json");
     const leaderboard = await getLeaderboard();
     res.send(leaderboard);
+    res.end();
+  } catch (error) {
+    res.send({ error: "error_calculating_stats" });
+    res.end();
+  }
+});
+
+app.get("/mapped-state", async (req, res) => {
+  try {
+    res.setHeader("Content-Type", "application/json");
+    const result = await mapState();
+    res.send(result);
     res.end();
   } catch (error) {
     res.send({ error: "error_calculating_stats" });
