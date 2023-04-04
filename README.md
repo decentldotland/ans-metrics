@@ -25,5 +25,9 @@ Type: `listing` or `mints`
 
 - `GET /recents/:type`
 
+### 4- Mapped State
+
+- `GET /mapped-state`
+
 ## License
 This projects is licensed under the [MIT License](./LICENSE)
